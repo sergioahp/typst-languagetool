@@ -41,17 +41,19 @@
           postInstall = ''
             # CLI: automatically use jar backend with nixpkgs languagetool
             wrapProgram $out/bin/typst-languagetool \
+              --set JAVA_HOME "${pkgs.jdk}" \
               --prefix LD_LIBRARY_PATH : "${pkgs.lib.makeLibraryPath [ pkgs.jdk ]}" \
-              --add-flags "--jar-location ${pkgs.languagetool}/share/languagetool-server.jar"
+              --add-flags "--jar-location ${pkgs.languagetool}/share/languagetool.jar"
 
             # LSP: provide JRE runtime (users configure backend in editor settings)
             wrapProgram $out/bin/typst-languagetool-lsp \
+              --set JAVA_HOME "${pkgs.jdk}" \
               --prefix LD_LIBRARY_PATH : "${pkgs.lib.makeLibraryPath [ pkgs.jdk ]}"
           '';
 
           passthru = {
             inherit (pkgs) languagetool;
-            languagetoolJar = "${pkgs.languagetool}/share/languagetool-server.jar";
+            languagetoolJar = "${pkgs.languagetool}/share/languagetool.jar";
           };
 
           meta = with pkgs.lib; {
